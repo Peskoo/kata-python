@@ -29,26 +29,21 @@ class FriendFetcherDb(object):
 
             self.conn.close()
 
-
     def ad_hoc(self, sql):
         cursor = self.conn.cursor()
         cursor.execute(sql)
         self.conn.commit()
 
-    def fetch_user_infos(self):
+    def fetch_info(self, sql):
         cursor = self.conn.cursor()
-        results = cursor.execute("""
-                        SELECT * FROM user_infos
-                    """)
+        results = cursor.execute(sql)
         results = results.fetchall()
         return results
-
 
     def time_to_commit(self):
         self.transaction_count += 1
         if self.transaction_count % 100:
             self.conn.commit()
-
 
     def setup_db(self):
         try:
@@ -63,7 +58,6 @@ class FriendFetcherDb(object):
         except sqlite3.OperationalError:
             pass
 
-
         try:
             self.conn.execute("""
         CREATE TABLE locations (
@@ -72,4 +66,3 @@ class FriendFetcherDb(object):
            """)
         except sqlite3.OperationalError:
             pass
-
